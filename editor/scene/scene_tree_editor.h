@@ -221,6 +221,7 @@ class SceneTreeEditor : public Control {
 	bool _is_script_type(const StringName &p_type) const;
 
 	Vector<StringName> valid_types;
+	bool interface_mode = false;
 
 	void _update_ask_before_revoking_unique_name();
 	void _revoke_unique_name();
@@ -248,6 +249,7 @@ public:
 
 	void set_show_enabled_subscene(bool p_show) { show_enabled_subscene = p_show; }
 	void set_valid_types(const Vector<StringName> &p_valid);
+	void set_interface_mode(bool p_enabled);
 	void clear_cache();
 
 	inline void update_tree() { _update_tree(); }
@@ -276,6 +278,7 @@ class SceneTreeDialog : public ConfirmationDialog {
 	CheckButton *show_all_nodes = nullptr;
 	LocalVector<TextureRect *> valid_type_icons;
 	HBoxContainer *allowed_types_hbox = nullptr;
+	bool interface_mode = false;
 
 	void _select();
 	void _cancel();
@@ -292,6 +295,7 @@ protected:
 public:
 	void popup_scenetree_dialog(Node *p_selected_node = nullptr, Node *p_marked_node = nullptr, bool p_marked_node_selectable = true, bool p_marked_node_children_selectable = true);
 	void set_valid_types(const Vector<StringName> &p_valid);
+	void set_interface_mode(bool p_enabled);
 
 	SceneTreeEditor *get_scene_tree() { return tree; }
 	LineEdit *get_filter_line_edit() { return filter; }

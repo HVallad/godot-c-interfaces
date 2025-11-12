@@ -85,12 +85,13 @@ namespace Godot.SourceGenerators
         LocaleId = 32,
         LocalizableString = 33,
         NodeType = 34,
-        HideQuaternionEdit = 35,
-        Password = 36,
-        LayersAvoidance = 37,
-        DictionaryType = 38,
-        ToolButton = 39,
-        Max = 40
+        InterfaceType = 35,
+        HideQuaternionEdit = 36,
+        Password = 37,
+        LayersAvoidance = 38,
+        DictionaryType = 39,
+        ToolButton = 40,
+        Max = 41
     }
 
     [Flags]

@@ -881,7 +881,7 @@ Error SceneState::_parse_node(Node *p_owner, Node *p_node, int p_parent_idx, Has
 		Variant value = p_node->get(name);
 		bool use_deferred_node_path_bit = false;
 
-		if (E.type == Variant::OBJECT && E.hint == PROPERTY_HINT_NODE_TYPE) {
+		if (E.type == Variant::OBJECT && (E.hint == PROPERTY_HINT_NODE_TYPE || E.hint == PROPERTY_HINT_INTERFACE_TYPE)) {
 			if (value.get_type() == Variant::OBJECT) {
 				if (Node *n = Object::cast_to<Node>(value)) {
 					value = p_node->get_path_to(n);

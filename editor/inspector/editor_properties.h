@@ -676,6 +676,7 @@ class EditorPropertyNodePath : public EditorProperty {
 	bool use_path_from_scene_root = false;
 	bool editing_node = false;
 	bool dropping = false;
+	bool interface_mode = false;
 
 	Vector<StringName> valid_types;
 	void _node_selected(const NodePath &p_path, bool p_absolute = true);
@@ -701,6 +702,7 @@ protected:
 public:
 	virtual void update_property() override;
 	void setup(const Vector<StringName> &p_valid_types, bool p_use_path_from_scene_root = true, bool p_editing_node = false);
+	void set_interface_mode(bool p_enabled);
 	EditorPropertyNodePath();
 };
 

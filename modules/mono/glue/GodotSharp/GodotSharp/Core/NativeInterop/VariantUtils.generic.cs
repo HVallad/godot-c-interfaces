@@ -196,6 +196,19 @@ public partial class VariantUtils
         if (typeof(GodotObject).IsAssignableFrom(typeof(T)))
             return CreateFromGodotObject(UnsafeAs<GodotObject>(from));
 
+        // Handle interface types - treat them as GodotObject
+        // Interfaces can't be checked with IsAssignableFrom, so we check if T is an interface
+        if (typeof(T).IsInterface)
+        {
+            // Cast the interface to object first, then to GodotObject
+            // This works because at runtime, the actual value will be a GodotObject instance
+            object obj = from!;
+            if (obj is GodotObject godotObj)
+                return CreateFromGodotObject(godotObj);
+            // If it's null or not a GodotObject, return default variant
+            return default;
+        }
+
         // `typeof(T).IsEnum` is optimized away
 
         if (typeof(T).IsEnum)
@@ -396,6 +409,15 @@ public partial class VariantUtils
 
         if (typeof(GodotObject).IsAssignableFrom(typeof(T)))
             return (T)(object)ConvertToGodotObject(variant);
+
+        // Handle interface types - treat them as GodotObject
+        // Interfaces can't be checked with IsAssignableFrom, so we check if T is an interface
+        if (typeof(T).IsInterface)
+        {
+            // Convert to GodotObject first, then cast to the interface type
+            var godotObj = ConvertToGodotObject(variant);
+            return (T)(object)godotObj;
+        }
 
         // `typeof(T).IsEnum` is optimized away
 

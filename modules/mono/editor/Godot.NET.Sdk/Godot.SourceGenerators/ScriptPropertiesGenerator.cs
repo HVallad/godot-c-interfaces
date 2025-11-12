@@ -731,6 +731,15 @@ namespace Godot.SourceGenerators
 
                     return true;
                 }
+
+                // Check if the type is an interface
+                if (memberNamedType.TypeKind == TypeKind.Interface)
+                {
+                    hint = PropertyHint.InterfaceType;
+                    hintString = memberNamedType.ToDisplayString();
+
+                    return true;
+                }
             }
 
             static bool TryGetNodeOrResourceType(AttributeData exportAttr, out PropertyHint hint, out string? hintString)

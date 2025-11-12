@@ -23,6 +23,7 @@ namespace Godot.Bridge
         public delegate* unmanaged<IntPtr, IntPtr, void> ScriptManagerBridge_SetGodotObjectPtr;
         public delegate* unmanaged<IntPtr, godot_string_name*, godot_variant**, int, godot_bool*, void> ScriptManagerBridge_RaiseEventSignal;
         public delegate* unmanaged<IntPtr, IntPtr, godot_bool> ScriptManagerBridge_ScriptIsOrInherits;
+        public delegate* unmanaged<IntPtr, godot_string_name*, godot_bool> ScriptManagerBridge_ScriptImplementsInterface;
         public delegate* unmanaged<IntPtr, godot_string*, godot_bool> ScriptManagerBridge_AddScriptBridge;
         public delegate* unmanaged<godot_string*, godot_ref*, void> ScriptManagerBridge_GetOrCreateScriptBridgeForPath;
         public delegate* unmanaged<IntPtr, void> ScriptManagerBridge_RemoveScriptBridge;
@@ -67,6 +68,7 @@ namespace Godot.Bridge
                 ScriptManagerBridge_SetGodotObjectPtr = &ScriptManagerBridge.SetGodotObjectPtr,
                 ScriptManagerBridge_RaiseEventSignal = &ScriptManagerBridge.RaiseEventSignal,
                 ScriptManagerBridge_ScriptIsOrInherits = &ScriptManagerBridge.ScriptIsOrInherits,
+                ScriptManagerBridge_ScriptImplementsInterface = &ScriptManagerBridge.ScriptImplementsInterface,
                 ScriptManagerBridge_AddScriptBridge = &ScriptManagerBridge.AddScriptBridge,
                 ScriptManagerBridge_GetOrCreateScriptBridgeForPath = &ScriptManagerBridge.GetOrCreateScriptBridgeForPath,
                 ScriptManagerBridge_RemoveScriptBridge = &ScriptManagerBridge.RemoveScriptBridge,

@@ -117,131 +117,135 @@ namespace Godot.SourceGenerators
                 case SpecialType.System_String:
                     return MarshalType.String;
                 default:
-                {
-                    var typeKind = type.TypeKind;
-
-                    if (typeKind == TypeKind.Enum)
-                        return MarshalType.Enum;
-
-                    if (typeKind == TypeKind.Struct)
                     {
-                        if (type.ContainingAssembly?.Name == "GodotSharp" &&
-                            type.ContainingNamespace?.Name == "Godot")
+                        var typeKind = type.TypeKind;
+
+                        if (typeKind == TypeKind.Enum)
+                            return MarshalType.Enum;
+
+                        if (typeKind == TypeKind.Struct)
                         {
-                            return type switch
+                            if (type.ContainingAssembly?.Name == "GodotSharp" &&
+                                type.ContainingNamespace?.Name == "Godot")
                             {
-                                { Name: "Vector2" } => MarshalType.Vector2,
-                                { Name: "Vector2I" } => MarshalType.Vector2I,
-                                { Name: "Rect2" } => MarshalType.Rect2,
-                                { Name: "Rect2I" } => MarshalType.Rect2I,
-                                { Name: "Transform2D" } => MarshalType.Transform2D,
-                                { Name: "Vector3" } => MarshalType.Vector3,
-                                { Name: "Vector3I" } => MarshalType.Vector3I,
-                                { Name: "Basis" } => MarshalType.Basis,
-                                { Name: "Quaternion" } => MarshalType.Quaternion,
-                                { Name: "Transform3D" } => MarshalType.Transform3D,
-                                { Name: "Vector4" } => MarshalType.Vector4,
-                                { Name: "Vector4I" } => MarshalType.Vector4I,
-                                { Name: "Projection" } => MarshalType.Projection,
-                                { Name: "Aabb" } => MarshalType.Aabb,
-                                { Name: "Color" } => MarshalType.Color,
-                                { Name: "Plane" } => MarshalType.Plane,
-                                { Name: "Rid" } => MarshalType.Rid,
-                                { Name: "Callable" } => MarshalType.Callable,
-                                { Name: "Signal" } => MarshalType.Signal,
-                                { Name: "Variant" } => MarshalType.Variant,
-                                _ => null
-                            };
+                                return type switch
+                                {
+                                    { Name: "Vector2" } => MarshalType.Vector2,
+                                    { Name: "Vector2I" } => MarshalType.Vector2I,
+                                    { Name: "Rect2" } => MarshalType.Rect2,
+                                    { Name: "Rect2I" } => MarshalType.Rect2I,
+                                    { Name: "Transform2D" } => MarshalType.Transform2D,
+                                    { Name: "Vector3" } => MarshalType.Vector3,
+                                    { Name: "Vector3I" } => MarshalType.Vector3I,
+                                    { Name: "Basis" } => MarshalType.Basis,
+                                    { Name: "Quaternion" } => MarshalType.Quaternion,
+                                    { Name: "Transform3D" } => MarshalType.Transform3D,
+                                    { Name: "Vector4" } => MarshalType.Vector4,
+                                    { Name: "Vector4I" } => MarshalType.Vector4I,
+                                    { Name: "Projection" } => MarshalType.Projection,
+                                    { Name: "Aabb" } => MarshalType.Aabb,
+                                    { Name: "Color" } => MarshalType.Color,
+                                    { Name: "Plane" } => MarshalType.Plane,
+                                    { Name: "Rid" } => MarshalType.Rid,
+                                    { Name: "Callable" } => MarshalType.Callable,
+                                    { Name: "Signal" } => MarshalType.Signal,
+                                    { Name: "Variant" } => MarshalType.Variant,
+                                    _ => null
+                                };
+                            }
                         }
-                    }
-                    else if (typeKind == TypeKind.Array)
-                    {
-                        var arrayType = (IArrayTypeSymbol)type;
+                        else if (typeKind == TypeKind.Array)
+                        {
+                            var arrayType = (IArrayTypeSymbol)type;
 
-                        if (arrayType.Rank != 1)
+                            if (arrayType.Rank != 1)
+                                return null;
+
+                            var elementType = arrayType.ElementType;
+
+                            switch (elementType.SpecialType)
+                            {
+                                case SpecialType.System_Byte:
+                                    return MarshalType.ByteArray;
+                                case SpecialType.System_Int32:
+                                    return MarshalType.Int32Array;
+                                case SpecialType.System_Int64:
+                                    return MarshalType.Int64Array;
+                                case SpecialType.System_Single:
+                                    return MarshalType.Float32Array;
+                                case SpecialType.System_Double:
+                                    return MarshalType.Float64Array;
+                                case SpecialType.System_String:
+                                    return MarshalType.StringArray;
+                            }
+
+                            if (elementType.SimpleDerivesFrom(typeCache.GodotObjectType))
+                                return MarshalType.GodotObjectOrDerivedArray;
+
+                            if (elementType.ContainingAssembly?.Name == "GodotSharp" &&
+                                elementType.ContainingNamespace?.Name == "Godot")
+                            {
+                                switch (elementType)
+                                {
+                                    case { Name: "Vector2" }:
+                                        return MarshalType.Vector2Array;
+                                    case { Name: "Vector3" }:
+                                        return MarshalType.Vector3Array;
+                                    case { Name: "Vector4" }:
+                                        return MarshalType.Vector4Array;
+                                    case { Name: "Color" }:
+                                        return MarshalType.ColorArray;
+                                    case { Name: "StringName" }:
+                                        return MarshalType.SystemArrayOfStringName;
+                                    case { Name: "NodePath" }:
+                                        return MarshalType.SystemArrayOfNodePath;
+                                    case { Name: "Rid" }:
+                                        return MarshalType.SystemArrayOfRid;
+                                }
+                            }
+
                             return null;
-
-                        var elementType = arrayType.ElementType;
-
-                        switch (elementType.SpecialType)
-                        {
-                            case SpecialType.System_Byte:
-                                return MarshalType.ByteArray;
-                            case SpecialType.System_Int32:
-                                return MarshalType.Int32Array;
-                            case SpecialType.System_Int64:
-                                return MarshalType.Int64Array;
-                            case SpecialType.System_Single:
-                                return MarshalType.Float32Array;
-                            case SpecialType.System_Double:
-                                return MarshalType.Float64Array;
-                            case SpecialType.System_String:
-                                return MarshalType.StringArray;
                         }
-
-                        if (elementType.SimpleDerivesFrom(typeCache.GodotObjectType))
-                            return MarshalType.GodotObjectOrDerivedArray;
-
-                        if (elementType.ContainingAssembly?.Name == "GodotSharp" &&
-                            elementType.ContainingNamespace?.Name == "Godot")
+                        else
                         {
-                            switch (elementType)
+                            if (type.SimpleDerivesFrom(typeCache.GodotObjectType))
+                                return MarshalType.GodotObjectOrDerived;
+
+                            // Check if it's an interface type (for C# interface exports)
+                            if (typeKind == TypeKind.Interface)
+                                return MarshalType.GodotObjectOrDerived;
+
+                            if (type.ContainingAssembly?.Name == "GodotSharp")
                             {
-                                case { Name: "Vector2" }:
-                                    return MarshalType.Vector2Array;
-                                case { Name: "Vector3" }:
-                                    return MarshalType.Vector3Array;
-                                case { Name: "Vector4" }:
-                                    return MarshalType.Vector4Array;
-                                case { Name: "Color" }:
-                                    return MarshalType.ColorArray;
-                                case { Name: "StringName" }:
-                                    return MarshalType.SystemArrayOfStringName;
-                                case { Name: "NodePath" }:
-                                    return MarshalType.SystemArrayOfNodePath;
-                                case { Name: "Rid" }:
-                                    return MarshalType.SystemArrayOfRid;
+                                switch (type.ContainingNamespace?.Name)
+                                {
+                                    case "Godot":
+                                        return type switch
+                                        {
+                                            { Name: "StringName" } => MarshalType.StringName,
+                                            { Name: "NodePath" } => MarshalType.NodePath,
+                                            _ => null
+                                        };
+                                    case "Collections"
+                                        when type.ContainingNamespace?.FullQualifiedNameOmitGlobal() == "Godot.Collections":
+                                        return type switch
+                                        {
+                                            { Name: "Dictionary" } =>
+                                                type is INamedTypeSymbol { IsGenericType: false } ?
+                                                    MarshalType.GodotDictionary :
+                                                    MarshalType.GodotGenericDictionary,
+                                            { Name: "Array" } =>
+                                                type is INamedTypeSymbol { IsGenericType: false } ?
+                                                    MarshalType.GodotArray :
+                                                    MarshalType.GodotGenericArray,
+                                            _ => null
+                                        };
+                                }
                             }
                         }
 
-                        return null;
+                        break;
                     }
-                    else
-                    {
-                        if (type.SimpleDerivesFrom(typeCache.GodotObjectType))
-                            return MarshalType.GodotObjectOrDerived;
-
-                        if (type.ContainingAssembly?.Name == "GodotSharp")
-                        {
-                            switch (type.ContainingNamespace?.Name)
-                            {
-                                case "Godot":
-                                    return type switch
-                                    {
-                                        { Name: "StringName" } => MarshalType.StringName,
-                                        { Name: "NodePath" } => MarshalType.NodePath,
-                                        _ => null
-                                    };
-                                case "Collections"
-                                    when type.ContainingNamespace?.FullQualifiedNameOmitGlobal() == "Godot.Collections":
-                                    return type switch
-                                    {
-                                        { Name: "Dictionary" } =>
-                                            type is INamedTypeSymbol { IsGenericType: false } ?
-                                                MarshalType.GodotDictionary :
-                                                MarshalType.GodotGenericDictionary,
-                                        { Name: "Array" } =>
-                                            type is INamedTypeSymbol { IsGenericType: false } ?
-                                                MarshalType.GodotArray :
-                                                MarshalType.GodotGenericArray,
-                                        _ => null
-                                    };
-                            }
-                        }
-                    }
-
-                    break;
-                }
             }
 
             return null;

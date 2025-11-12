@@ -36,6 +36,12 @@
 #include "editor/docks/inspector_dock.h"
 #include "editor/docks/scene_tree_dock.h"
 #include "editor/editor_node.h"
+
+#include "modules/modules_enabled.gen.h" // For MODULE_MONO_ENABLED
+
+#ifdef MODULE_MONO_ENABLED
+#include "modules/mono/csharp_script.h"
+#endif
 #include "editor/editor_string_names.h"
 #include "editor/gui/create_dialog.h"
 #include "editor/gui/editor_file_dialog.h"
@@ -2904,6 +2910,7 @@ void EditorPropertyNodePath::_node_assign() {
 		scene_tree = memnew(SceneTreeDialog);
 		scene_tree->get_scene_tree()->set_show_enabled_subscene(true);
 		scene_tree->set_valid_types(valid_types);
+		scene_tree->set_interface_mode(interface_mode);
 		add_child(scene_tree);
 		scene_tree->connect("selected", callable_mp(this, &EditorPropertyNodePath::_node_selected).bind(true));
 	}
@@ -3042,6 +3049,28 @@ bool EditorPropertyNodePath::is_drop_valid(const Dictionary &p_drag_data) const 
 		return true;
 	}
 
+	// If in interface mode, check if the node's script implements the interface
+	if (interface_mode) {
+		Ref<Script> dropped_node_script = dropped_node->get_script();
+		if (dropped_node_script.is_null()) {
+			return false;
+		}
+
+#ifdef MODULE_MONO_ENABLED
+		Ref<CSharpScript> cs_script = dropped_node_script;
+		if (cs_script.is_valid()) {
+			// Check if the script implements the required interface
+			for (const StringName &E : valid_types) {
+				if (cs_script->implements_interface(E)) {
+					return true;
+				}
+			}
+		}
+#endif
+		return false;
+	}
+
+	// Standard type checking for non-interface mode
 	for (const StringName &E : valid_types) {
 		if (dropped_node->is_class(E) ||
 				EditorNode::get_singleton()->is_object_of_custom_type(dropped_node, E)) {
@@ -3096,6 +3125,10 @@ void EditorPropertyNodePath::setup(const Vector<StringName> &p_valid_types, bool
 	valid_types = p_valid_types;
 	editing_node = p_editing_node;
 	use_path_from_scene_root = p_use_path_from_scene_root;
+}
+
+void EditorPropertyNodePath::set_interface_mode(bool p_enabled) {
+	interface_mode = p_enabled;
 }
 
 void EditorPropertyNodePath::_notification(int p_what) {
@@ -4050,11 +4083,14 @@ EditorProperty *EditorInspectorDefaultPlugin::get_editor_for_property(Object *p_
 			return editor;
 		} break;
 		case Variant::OBJECT: {
-			if (p_hint == PROPERTY_HINT_NODE_TYPE) {
+			if (p_hint == PROPERTY_HINT_NODE_TYPE || p_hint == PROPERTY_HINT_INTERFACE_TYPE) {
 				EditorPropertyNodePath *editor = memnew(EditorPropertyNodePath);
 				Vector<String> types = p_hint_text.split(",", false);
 				Vector<StringName> sn = Variant(types); //convert via variant
 				editor->setup(sn, false, true);
+				if (p_hint == PROPERTY_HINT_INTERFACE_TYPE) {
+					editor->set_interface_mode(true);
+				}
 				return editor;
 			} else {
 				EditorPropertyResource *editor = memnew(EditorPropertyResource);

@@ -405,6 +405,37 @@ namespace Godot.Bridge
         }
 
         [UnmanagedCallersOnly]
+        internal static unsafe godot_bool ScriptImplementsInterface(IntPtr scriptPtr, godot_string_name* interfaceName)
+        {
+            try
+            {
+                if (!_scriptTypeBiMap.TryGetScriptType(scriptPtr, out Type? scriptType))
+                    return godot_bool.False;
+
+                string interfaceNameStr = StringName.CreateTakingOwnershipOfDisposableValue(
+                    NativeFuncs.godotsharp_string_name_new_copy(*interfaceName));
+
+                // Check if the script type implements the specified interface
+                Type[] interfaces = scriptType.GetInterfaces();
+                foreach (Type iface in interfaces)
+                {
+                    // Check both simple name and fully qualified name
+                    if (iface.Name == interfaceNameStr || iface.FullName == interfaceNameStr)
+                    {
+                        return godot_bool.True;
+                    }
+                }
+
+                return godot_bool.False;
+            }
+            catch (Exception e)
+            {
+                ExceptionUtils.LogException(e);
+                return godot_bool.False;
+            }
+        }
+
+        [UnmanagedCallersOnly]
         internal static unsafe godot_bool AddScriptBridge(IntPtr scriptPtr, godot_string* scriptPath)
         {
             try

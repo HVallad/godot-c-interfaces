@@ -2764,6 +2764,18 @@ StringName CSharpScript::get_global_name() const {
 	return type_info.is_global_class ? StringName(type_info.class_name) : StringName();
 }
 
+bool CSharpScript::implements_interface(const StringName &p_interface_name) const {
+	if (!valid) {
+		return false;
+	}
+
+	if (!GDMonoCache::godot_api_cache_updated) {
+		return false;
+	}
+
+	return GDMonoCache::managed_callbacks.ScriptManagerBridge_ScriptImplementsInterface(this, &p_interface_name);
+}
+
 void CSharpScript::get_script_property_list(List<PropertyInfo> *r_list) const {
 #ifdef TOOLS_ENABLED
 	const CSharpScript *top = this;

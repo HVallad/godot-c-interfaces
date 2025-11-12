@@ -33,6 +33,12 @@
 #include "core/config/project_settings.h"
 #include "core/object/script_language.h"
 #include "editor/animation/animation_player_editor_plugin.h"
+
+#include "modules/modules_enabled.gen.h" // For MODULE_MONO_ENABLED
+
+#ifdef MODULE_MONO_ENABLED
+#include "modules/mono/csharp_script.h"
+#endif
 #include "editor/docks/editor_dock_manager.h"
 #include "editor/docks/node_dock.h"
 #include "editor/editor_node.h"
@@ -355,22 +361,43 @@ void SceneTreeEditor::_update_node_subtree(Node *p_node, TreeItem *p_parent, boo
 
 	if (valid_types.size()) {
 		bool valid = false;
-		for (const StringName &E : valid_types) {
-			if (p_node->is_class(E) ||
-					EditorNode::get_singleton()->is_object_of_custom_type(p_node, E)) {
-				valid = true;
-				break;
-			} else {
-				Ref<Script> node_script = p_node->get_script();
-				while (node_script.is_valid()) {
-					if (node_script->get_path() == E) {
-						valid = true;
+
+		// If in interface mode, check if the node's script implements the interface
+		if (interface_mode) {
+			Ref<Script> node_script = p_node->get_script();
+			if (node_script.is_valid()) {
+#ifdef MODULE_MONO_ENABLED
+				Ref<CSharpScript> cs_script = node_script;
+				if (cs_script.is_valid()) {
+					// Check if the script implements any of the required interfaces
+					for (const StringName &E : valid_types) {
+						if (cs_script->implements_interface(E)) {
+							valid = true;
+							break;
+						}
+					}
+				}
+#endif
+			}
+		} else {
+			// Standard type checking for non-interface mode
+			for (const StringName &E : valid_types) {
+				if (p_node->is_class(E) ||
+						EditorNode::get_singleton()->is_object_of_custom_type(p_node, E)) {
+					valid = true;
+					break;
+				} else {
+					Ref<Script> node_script = p_node->get_script();
+					while (node_script.is_valid()) {
+						if (node_script->get_path() == E) {
+							valid = true;
+							break;
+						}
+						node_script = node_script->get_base_script();
+					}
+					if (valid) {
 						break;
 					}
-					node_script = node_script->get_base_script();
-				}
-				if (valid) {
-					break;
 				}
 			}
 		}
@@ -1753,6 +1780,10 @@ void SceneTreeEditor::set_valid_types(const Vector<StringName> &p_valid) {
 	clear_cache();
 }
 
+void SceneTreeEditor::set_interface_mode(bool p_enabled) {
+	interface_mode = p_enabled;
+}
+
 void SceneTreeEditor::set_editor_selection(EditorSelection *p_selection) {
 	editor_selection = p_selection;
 	tree->set_select_mode(Tree::SELECT_MULTI);
@@ -2300,6 +2331,11 @@ void SceneTreeDialog::set_valid_types(const Vector<StringName> &p_valid) {
 	if (is_inside_tree()) {
 		_update_valid_type_icons();
 	}
+}
+
+void SceneTreeDialog::set_interface_mode(bool p_enabled) {
+	interface_mode = p_enabled;
+	tree->set_interface_mode(p_enabled);
 }
 
 void SceneTreeDialog::_notification(int p_what) {
