@@ -909,7 +909,7 @@ Error SceneState::_parse_node(Node *p_owner, Node *p_node, int p_parent_idx, Has
 				}
 				Variant::Type subtype = Variant::Type(subtype_string.to_int());
 
-				if (subtype == Variant::OBJECT && subtype_hint == PROPERTY_HINT_NODE_TYPE) {
+				if (subtype == Variant::OBJECT && (subtype_hint == PROPERTY_HINT_NODE_TYPE || subtype_hint == PROPERTY_HINT_INTERFACE_TYPE)) {
 					use_deferred_node_path_bit = true;
 					Array array = value;
 					Array new_array;
@@ -938,7 +938,7 @@ Error SceneState::_parse_node(Node *p_owner, Node *p_node, int p_parent_idx, Has
 					key_subtype_string = key_subtype_string.substr(0, key_slash_pos);
 				}
 				Variant::Type key_subtype = Variant::Type(key_subtype_string.to_int());
-				bool convert_key = key_subtype == Variant::OBJECT && key_subtype_hint == PROPERTY_HINT_NODE_TYPE;
+				bool convert_key = key_subtype == Variant::OBJECT && (key_subtype_hint == PROPERTY_HINT_NODE_TYPE || key_subtype_hint == PROPERTY_HINT_INTERFACE_TYPE);
 
 				int value_subtype_separator = E.hint_string.find_char(':', key_value_separator) - (key_value_separator + 1);
 				String value_subtype_string = E.hint_string.substr(key_value_separator + 1, value_subtype_separator);
@@ -949,7 +949,7 @@ Error SceneState::_parse_node(Node *p_owner, Node *p_node, int p_parent_idx, Has
 					value_subtype_string = value_subtype_string.substr(0, value_slash_pos);
 				}
 				Variant::Type value_subtype = Variant::Type(value_subtype_string.to_int());
-				bool convert_value = value_subtype == Variant::OBJECT && value_subtype_hint == PROPERTY_HINT_NODE_TYPE;
+				bool convert_value = value_subtype == Variant::OBJECT && (value_subtype_hint == PROPERTY_HINT_NODE_TYPE || value_subtype_hint == PROPERTY_HINT_INTERFACE_TYPE);
 
 				if (convert_key || convert_value) {
 					use_deferred_node_path_bit = true;
