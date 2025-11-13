@@ -49,150 +49,150 @@ namespace Godot.NativeInterop
                 case TypeCode.String:
                     return Variant.Type.String;
                 default:
-                {
-                    if (type == typeof(Vector2))
-                        return Variant.Type.Vector2;
-
-                    if (type == typeof(Vector2I))
-                        return Variant.Type.Vector2I;
-
-                    if (type == typeof(Rect2))
-                        return Variant.Type.Rect2;
-
-                    if (type == typeof(Rect2I))
-                        return Variant.Type.Rect2I;
-
-                    if (type == typeof(Transform2D))
-                        return Variant.Type.Transform2D;
-
-                    if (type == typeof(Vector3))
-                        return Variant.Type.Vector3;
-
-                    if (type == typeof(Vector3I))
-                        return Variant.Type.Vector3I;
-
-                    if (type == typeof(Vector4))
-                        return Variant.Type.Vector4;
-
-                    if (type == typeof(Vector4I))
-                        return Variant.Type.Vector4I;
-
-                    if (type == typeof(Basis))
-                        return Variant.Type.Basis;
-
-                    if (type == typeof(Quaternion))
-                        return Variant.Type.Quaternion;
-
-                    if (type == typeof(Transform3D))
-                        return Variant.Type.Transform3D;
-
-                    if (type == typeof(Projection))
-                        return Variant.Type.Projection;
-
-                    if (type == typeof(Aabb))
-                        return Variant.Type.Aabb;
-
-                    if (type == typeof(Color))
-                        return Variant.Type.Color;
-
-                    if (type == typeof(Plane))
-                        return Variant.Type.Plane;
-
-                    if (type == typeof(Callable))
-                        return Variant.Type.Callable;
-
-                    if (type == typeof(Signal))
-                        return Variant.Type.Signal;
-
-                    if (type.IsEnum)
-                        return Variant.Type.Int;
-
-                    if (type.IsArray || type.IsSZArray)
                     {
-                        if (type == typeof(byte[]))
-                            return Variant.Type.PackedByteArray;
+                        if (type == typeof(Vector2))
+                            return Variant.Type.Vector2;
 
-                        if (type == typeof(int[]))
-                            return Variant.Type.PackedInt32Array;
+                        if (type == typeof(Vector2I))
+                            return Variant.Type.Vector2I;
 
-                        if (type == typeof(long[]))
-                            return Variant.Type.PackedInt64Array;
+                        if (type == typeof(Rect2))
+                            return Variant.Type.Rect2;
 
-                        if (type == typeof(float[]))
-                            return Variant.Type.PackedFloat32Array;
+                        if (type == typeof(Rect2I))
+                            return Variant.Type.Rect2I;
 
-                        if (type == typeof(double[]))
-                            return Variant.Type.PackedFloat64Array;
+                        if (type == typeof(Transform2D))
+                            return Variant.Type.Transform2D;
 
-                        if (type == typeof(string[]))
-                            return Variant.Type.PackedStringArray;
+                        if (type == typeof(Vector3))
+                            return Variant.Type.Vector3;
 
-                        if (type == typeof(Vector2[]))
-                            return Variant.Type.PackedVector2Array;
+                        if (type == typeof(Vector3I))
+                            return Variant.Type.Vector3I;
 
-                        if (type == typeof(Vector3[]))
-                            return Variant.Type.PackedVector3Array;
+                        if (type == typeof(Vector4))
+                            return Variant.Type.Vector4;
 
-                        if (type == typeof(Vector4[]))
-                            return Variant.Type.PackedVector4Array;
+                        if (type == typeof(Vector4I))
+                            return Variant.Type.Vector4I;
 
-                        if (type == typeof(Color[]))
-                            return Variant.Type.PackedColorArray;
+                        if (type == typeof(Basis))
+                            return Variant.Type.Basis;
 
-                        if (type == typeof(StringName[]))
-                            return Variant.Type.Array;
+                        if (type == typeof(Quaternion))
+                            return Variant.Type.Quaternion;
 
-                        if (type == typeof(NodePath[]))
-                            return Variant.Type.Array;
+                        if (type == typeof(Transform3D))
+                            return Variant.Type.Transform3D;
 
-                        if (type == typeof(Rid[]))
-                            return Variant.Type.Array;
+                        if (type == typeof(Projection))
+                            return Variant.Type.Projection;
 
-                        if (typeof(GodotObject[]).IsAssignableFrom(type))
-                            return Variant.Type.Array;
+                        if (type == typeof(Aabb))
+                            return Variant.Type.Aabb;
+
+                        if (type == typeof(Color))
+                            return Variant.Type.Color;
+
+                        if (type == typeof(Plane))
+                            return Variant.Type.Plane;
+
+                        if (type == typeof(Callable))
+                            return Variant.Type.Callable;
+
+                        if (type == typeof(Signal))
+                            return Variant.Type.Signal;
+
+                        if (type.IsEnum)
+                            return Variant.Type.Int;
+
+                        if (type.IsArray || type.IsSZArray)
+                        {
+                            if (type == typeof(byte[]))
+                                return Variant.Type.PackedByteArray;
+
+                            if (type == typeof(int[]))
+                                return Variant.Type.PackedInt32Array;
+
+                            if (type == typeof(long[]))
+                                return Variant.Type.PackedInt64Array;
+
+                            if (type == typeof(float[]))
+                                return Variant.Type.PackedFloat32Array;
+
+                            if (type == typeof(double[]))
+                                return Variant.Type.PackedFloat64Array;
+
+                            if (type == typeof(string[]))
+                                return Variant.Type.PackedStringArray;
+
+                            if (type == typeof(Vector2[]))
+                                return Variant.Type.PackedVector2Array;
+
+                            if (type == typeof(Vector3[]))
+                                return Variant.Type.PackedVector3Array;
+
+                            if (type == typeof(Vector4[]))
+                                return Variant.Type.PackedVector4Array;
+
+                            if (type == typeof(Color[]))
+                                return Variant.Type.PackedColorArray;
+
+                            if (type == typeof(StringName[]))
+                                return Variant.Type.Array;
+
+                            if (type == typeof(NodePath[]))
+                                return Variant.Type.Array;
+
+                            if (type == typeof(Rid[]))
+                                return Variant.Type.Array;
+
+                            if (typeof(GodotObject[]).IsAssignableFrom(type))
+                                return Variant.Type.Array;
+                        }
+                        else if (type.IsGenericType)
+                        {
+                            if (typeof(GodotObject).IsAssignableFrom(type))
+                                return Variant.Type.Object;
+
+                            // We use `IsAssignableFrom` with our helper interfaces to detect generic Godot collections
+                            // because `GetGenericTypeDefinition` is not supported in NativeAOT reflection-free mode.
+
+                            if (typeof(IGenericGodotDictionary).IsAssignableFrom(type))
+                                return Variant.Type.Dictionary;
+
+                            if (typeof(IGenericGodotArray).IsAssignableFrom(type))
+                                return Variant.Type.Array;
+                        }
+                        else if (type == typeof(Variant))
+                        {
+                            r_nil_is_variant = true;
+                            return Variant.Type.Nil;
+                        }
+                        else
+                        {
+                            if (typeof(GodotObject).IsAssignableFrom(type))
+                                return Variant.Type.Object;
+
+                            if (typeof(StringName) == type)
+                                return Variant.Type.StringName;
+
+                            if (typeof(NodePath) == type)
+                                return Variant.Type.NodePath;
+
+                            if (typeof(Rid) == type)
+                                return Variant.Type.Rid;
+
+                            if (typeof(Collections.Dictionary) == type)
+                                return Variant.Type.Dictionary;
+
+                            if (typeof(Collections.Array) == type)
+                                return Variant.Type.Array;
+                        }
+
+                        break;
                     }
-                    else if (type.IsGenericType)
-                    {
-                        if (typeof(GodotObject).IsAssignableFrom(type))
-                            return Variant.Type.Object;
-
-                        // We use `IsAssignableFrom` with our helper interfaces to detect generic Godot collections
-                        // because `GetGenericTypeDefinition` is not supported in NativeAOT reflection-free mode.
-
-                        if (typeof(IGenericGodotDictionary).IsAssignableFrom(type))
-                            return Variant.Type.Dictionary;
-
-                        if (typeof(IGenericGodotArray).IsAssignableFrom(type))
-                            return Variant.Type.Array;
-                    }
-                    else if (type == typeof(Variant))
-                    {
-                        r_nil_is_variant = true;
-                        return Variant.Type.Nil;
-                    }
-                    else
-                    {
-                        if (typeof(GodotObject).IsAssignableFrom(type))
-                            return Variant.Type.Object;
-
-                        if (typeof(StringName) == type)
-                            return Variant.Type.StringName;
-
-                        if (typeof(NodePath) == type)
-                            return Variant.Type.NodePath;
-
-                        if (typeof(Rid) == type)
-                            return Variant.Type.Rid;
-
-                        if (typeof(Collections.Dictionary) == type)
-                            return Variant.Type.Dictionary;
-
-                        if (typeof(Collections.Array) == type)
-                            return Variant.Type.Array;
-                    }
-
-                    break;
-                }
             }
 
             // Unknown
@@ -362,7 +362,6 @@ namespace Godot.NativeInterop
         // Array
 
         internal static T[] ConvertNativeGodotArrayToSystemArrayOfGodotObjectType<T>(in godot_array p_array)
-            where T : GodotObject
         {
             var array = Collections.Array.CreateTakingOwnershipOfDisposableValue(
                 NativeFuncs.godotsharp_array_new_copy(p_array));
@@ -371,7 +370,7 @@ namespace Godot.NativeInterop
             var ret = new T[length];
 
             for (int i = 0; i < length; i++)
-                ret[i] = (T)array[i].AsGodotObject();
+                ret[i] = (T)(object)array[i].AsGodotObject();
 
             return ret;
         }

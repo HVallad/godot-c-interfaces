@@ -75,10 +75,10 @@ public partial struct Variant : IDisposable
                 _disposer = null;
                 break;
             default:
-            {
-                _disposer = new Disposer(NativeVar);
-                break;
-            }
+                {
+                    _disposer = new Disposer(NativeVar);
+                    break;
+                }
         }
     }
 
@@ -329,8 +329,7 @@ public partial struct Variant : IDisposable
         VariantUtils.ConvertAsPackedColorArrayToSystemArray((godot_variant)NativeVar);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public T[] AsGodotObjectArray<T>()
-        where T : GodotObject =>
+    public T[] AsGodotObjectArray<T>() =>
         VariantUtils.ConvertToSystemArrayOfGodotObject<T>((godot_variant)NativeVar);
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]

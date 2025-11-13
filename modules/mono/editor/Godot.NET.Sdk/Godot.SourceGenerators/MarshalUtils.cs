@@ -182,6 +182,10 @@ namespace Godot.SourceGenerators
                             if (elementType.SimpleDerivesFrom(typeCache.GodotObjectType))
                                 return MarshalType.GodotObjectOrDerivedArray;
 
+                            // Check if the element type is an interface (for C# interface exports)
+                            if (elementType.TypeKind == TypeKind.Interface)
+                                return MarshalType.GodotObjectOrDerivedArray;
+
                             if (elementType.ContainingAssembly?.Name == "GodotSharp" &&
                                 elementType.ContainingNamespace?.Name == "Godot")
                             {
@@ -346,7 +350,8 @@ namespace Godot.SourceGenerators
             {
                 // We need a special case for GodotObjectOrDerived[], because it's not supported by VariantUtils.CreateFrom<T>
                 MarshalType.GodotObjectOrDerivedArray =>
-                    source.Append(VariantUtils, ".CreateFromSystemArrayOfGodotObject(", inputExpr, ")"),
+                    source.Append(VariantUtils, ".CreateFromSystemArrayOfGodotObject<",
+                        ((IArrayTypeSymbol)typeSymbol).ElementType.FullQualifiedNameIncludeGlobal(), ">(", inputExpr, ")"),
                 // We need a special case for generic Godot collections and GodotObjectOrDerived[], because VariantUtils.CreateFrom<T> is slower
                 MarshalType.GodotGenericDictionary =>
                     source.Append(VariantUtils, ".CreateFromDictionary(", inputExpr, ")"),
@@ -386,7 +391,9 @@ namespace Godot.SourceGenerators
             {
                 // We need a special case for GodotObjectOrDerived[], because it's not supported by Variant.From<T>
                 MarshalType.GodotObjectOrDerivedArray =>
-                    source.Append("global::Godot.Variant.CreateFrom(", inputExpr, ")"),
+                    source.Append("global::Godot.Variant.CreateCopyingBorrowed(",
+                        VariantUtils, ".CreateFromSystemArrayOfGodotObject<",
+                        ((IArrayTypeSymbol)typeSymbol).ElementType.FullQualifiedNameIncludeGlobal(), ">(", inputExpr, "))"),
                 // We need a special case for generic Godot collections, because Variant.From<T> is slower
                 MarshalType.GodotGenericDictionary or MarshalType.GodotGenericArray =>
                     source.Append("global::Godot.Variant.CreateFrom(", inputExpr, ")"),

@@ -271,11 +271,15 @@ namespace Godot.NativeInterop
             return CreateFromArray((godot_array)fromGodot.NativeValue);
         }
 
-        public static godot_variant CreateFromSystemArrayOfGodotObject(GodotObject[]? from)
+        public static godot_variant CreateFromSystemArrayOfGodotObject<T>(T[]? from)
         {
             if (from == null)
                 return default; // Nil
-            using var fromGodot = new Collections.Array(from);
+            using var fromGodot = new Collections.Array();
+            foreach (var item in from)
+            {
+                fromGodot.Add((GodotObject)(object)item);
+            }
             return CreateFromArray((godot_array)fromGodot.NativeValue);
         }
 
@@ -505,15 +509,15 @@ namespace Godot.NativeInterop
                 case Variant.Type.Nil:
                     return ""; // Otherwise, Variant -> String would return the string "Null"
                 case Variant.Type.String:
-                {
-                    // We avoid the internal call if the stored type is the same we want.
-                    return Marshaling.ConvertStringToManaged(p_var.String);
-                }
+                    {
+                        // We avoid the internal call if the stored type is the same we want.
+                        return Marshaling.ConvertStringToManaged(p_var.String);
+                    }
                 default:
-                {
-                    using godot_string godotString = NativeFuncs.godotsharp_variant_as_string(p_var);
-                    return Marshaling.ConvertStringToManaged(godotString);
-                }
+                    {
+                        using godot_string godotString = NativeFuncs.godotsharp_variant_as_string(p_var);
+                        return Marshaling.ConvertStringToManaged(godotString);
+                    }
             }
         }
 
@@ -662,7 +666,6 @@ namespace Godot.NativeInterop
         }
 
         public static T[] ConvertToSystemArrayOfGodotObject<T>(in godot_variant p_var)
-            where T : GodotObject
         {
             using var godotArray = NativeFuncs.godotsharp_variant_as_array(p_var);
             return Marshaling.ConvertNativeGodotArrayToSystemArrayOfGodotObjectType<T>(godotArray);
