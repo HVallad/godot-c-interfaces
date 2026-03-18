@@ -35,12 +35,11 @@
 #include "core/io/marshalls.h"
 #include "core/object/callable_mp.h"
 #include "core/object/class_db.h"
+#include "core/object/interface_db.h"
 #include "core/string/translation_server.h"
 #include "editor/docks/inspector_dock.h"
 #include "editor/docks/scene_tree_dock.h"
 #include "editor/editor_node.h"
-
-#include "core/object/interface_db.h"
 #include "editor/editor_string_names.h"
 #include "editor/gui/create_dialog.h"
 #include "editor/gui/editor_file_dialog.h"

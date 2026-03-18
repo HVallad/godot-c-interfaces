@@ -37,7 +37,6 @@
 #include "core/object/interface_db.h"
 #include "core/object/script_language.h"
 #include "editor/animation/animation_player_editor_plugin.h"
-
 #include "editor/docks/editor_dock_manager.h"
 #include "editor/docks/groups_dock.h"
 #include "editor/docks/signals_dock.h"
