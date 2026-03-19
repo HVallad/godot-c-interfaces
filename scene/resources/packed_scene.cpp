@@ -34,6 +34,8 @@
 #include "core/io/file_access.h"
 #include "core/io/missing_resource.h"
 #include "core/io/resource_loader.h"
+#include "core/object/callable_mp.h"
+#include "core/object/class_db.h"
 #include "core/object/interface_db.h"
 #include "core/object/script_language.h"
 #include "core/templates/local_vector.h"
@@ -638,7 +640,6 @@ Node *SceneState::instantiate(GenEditState p_edit_state) const {
 			Node *resolved = base->get_node_or_null(dnp.value);
 			if (resolved) {
 				// Validate interface compliance for interface-typed properties.
-				bool valid_prop = false;
 				List<PropertyInfo> plist;
 				base->get_property_list(&plist);
 				for (const PropertyInfo &pi : plist) {
@@ -647,7 +648,6 @@ Node *SceneState::instantiate(GenEditState p_edit_state) const {
 							WARN_PRINT(vformat("Node '%s' assigned to interface property '%s' does not implement '%s'.",
 									resolved->get_name(), dnp.property, pi.hint_string));
 						}
-						valid_prop = true;
 						break;
 					}
 				}
