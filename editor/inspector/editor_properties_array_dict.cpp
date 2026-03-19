@@ -573,7 +573,7 @@ void EditorPropertyArray::update_property() {
 }
 
 void EditorPropertyArray::_remove_pressed(int p_slot_index) {
-	ERR_FAIL_COND_MSG(p_slot_index < 0 || p_slot_index >= slots.size(),
+	ERR_FAIL_COND_MSG(p_slot_index < 0 || p_slot_index >= (int)slots.size(),
 			vformat("Invalid array slot index '%d' for removal.", p_slot_index));
 
 	Variant array = object->get_array().duplicate();
