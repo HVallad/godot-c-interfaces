@@ -1,6 +1,6 @@
 ---
 name: navigation
-description: Godot 4 navigation and pathfinding with NavigationAgent, NavigationRegion, avoidance, and layers in C#
+description: "TRIGGER when: code uses NavigationAgent2D, NavigationAgent3D, NavigationRegion2D, NavigationRegion3D, NavigationMesh, SetTargetPosition, GetNextPathPosition, IsNavigationFinished, or pathfinding/AI movement"
 user-invocable: true
 argument-hint: "[2d|3d] [topic]"
 ---

@@ -1,6 +1,6 @@
 ---
 name: interface-patterns
-description: C# interface and protocol patterns in Godot 4 — IDamageable, IInteractable, ISaveable, generic constraints, and component hybrids
+description: "TRIGGER when: code defines or implements C# interfaces (IDamageable, IInteractable, IMovable, ISaveable), uses 'is' pattern matching for components, or designs protocol-based systems in Godot"
 user-invocable: true
 argument-hint: "[interface-name]"
 ---

@@ -1,6 +1,6 @@
 ---
 name: physics
-description: Use when working with Godot physics bodies, collision, raycasting, CharacterBody movement, RigidBody forces, Area triggers, or collision layers/masks in C#
+description: "TRIGGER when: code uses CharacterBody2D, CharacterBody3D, RigidBody2D, RigidBody3D, Area2D, Area3D, MoveAndSlide, ApplyForce, ApplyImpulse, IsOnFloor, CollisionShape, PhysicsRayQueryParameters, DirectSpaceState, _IntegrateForces, or collision layers/masks"
 user-invocable: true
 argument-hint: "[topic: characterbody|rigidbody|area|raycast|layers|platformer|topdown]"
 ---

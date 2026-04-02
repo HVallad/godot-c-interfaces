@@ -1,6 +1,6 @@
 ---
 name: input-system
-description: Godot C# input events, actions, mouse/keyboard/gamepad handling, and common input patterns
+description: "TRIGGER when: code uses InputEvent, InputEventKey, InputEventMouseButton, InputEventJoypad, _Input, _UnhandledInput, Input.IsActionPressed, IsActionJustPressed, InputMap, GetMousePosition, or input handling"
 user-invocable: true
 argument-hint: "[action|event|mouse|gamepad|rebind]"
 ---

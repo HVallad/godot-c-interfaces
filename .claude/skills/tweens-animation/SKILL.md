@@ -1,6 +1,6 @@
 ---
 name: tweens-animation
-description: Godot C# Tween and AnimationPlayer patterns with easing, chaining, and common effects
+description: "TRIGGER when: code uses CreateTween, TweenProperty, TweenCallback, TweenInterval, TweenMethod, TransitionType, EaseType, AnimationPlayer, AnimationTree, or works with animation/interpolation"
 user-invocable: true
 argument-hint: "[tween|animation|easing|pattern]"
 ---

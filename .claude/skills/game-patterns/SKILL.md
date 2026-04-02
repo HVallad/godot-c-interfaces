@@ -1,6 +1,6 @@
 ---
 name: game-patterns
-description: Common game architecture patterns in Godot 4 C# — state machines, pooling, singletons, DI, components, commands, observers
+description: "TRIGGER when: implementing state machines, object pooling, singletons, autoloads, dependency injection, command pattern, observer pattern, or common game architecture in Godot C#"
 user-invocable: true
 argument-hint: "[pattern-name]"
 ---

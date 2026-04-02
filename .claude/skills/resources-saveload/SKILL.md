@@ -1,6 +1,6 @@
 ---
 name: resources-saveload
-description: Godot C# Resource system, custom resources, loading, saving, PackedScene, and persistence patterns
+description: "TRIGGER when: code uses Resource, ResourceLoader, ResourceSaver, PackedScene, GD.Load, LoadThreadedRequest, ResourceLocalToScene, or works with save/load, res://, user:// paths"
 user-invocable: true
 argument-hint: "[resource|load|save|packedscene|async]"
 ---

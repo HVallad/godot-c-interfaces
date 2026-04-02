@@ -1,6 +1,6 @@
 ---
 name: ui-controls
-description: Godot C# UI Control nodes — layout, containers, focus, themes, and common UI patterns
+description: "TRIGGER when: code uses Control, Button, Label, LineEdit, TextEdit, Container, VBoxContainer, HBoxContainer, GridContainer, MarginContainer, GrabFocus, _GuiInput, MouseFilter, Theme, anchors, or UI layout"
 user-invocable: true
 argument-hint: "[layout|container|focus|theme|pattern]"
 ---

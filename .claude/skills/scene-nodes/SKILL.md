@@ -1,6 +1,6 @@
 ---
 name: scene-nodes
-description: Use when working with Godot node hierarchy, scene tree lifecycle, node traversal, scene instancing, or pause handling in C#
+description: "TRIGGER when: code uses Node, Node2D, Node3D, GetNode, GetChild, GetParent, AddChild, RemoveChild, QueueFree, PackedScene, Instantiate, SceneTree, GetTree, _Ready, _EnterTree, _ExitTree, ProcessMode, or works with scene hierarchy"
 user-invocable: true
 argument-hint: "[topic: lifecycle|traversal|instancing|groups|pause]"
 ---

@@ -1,6 +1,6 @@
 ---
 name: scripting-patterns
-description: Use when working with Godot C# exports, tool scripts, global classes, virtual overrides, dynamic properties, or fixing GD01xx errors
+description: "TRIGGER when: code uses [Export], [Tool], [GlobalClass], [ExportCategory], [ExportGroup], _GetPropertyList, _Get, _Set, PropertyInfo, PropertyHint, or encounters GD0001/GD0101/GD0301 errors"
 user-invocable: true
 argument-hint: "[topic: export|tool|globalclass|virtual|properties|errors]"
 ---

@@ -1,6 +1,6 @@
 ---
 name: signals-events
-description: Use when working with Godot signals, events, custom signal declarations, connecting/disconnecting, async await on signals, or event bus patterns in C#
+description: "TRIGGER when: code uses Signal, EmitSignal, Connect, Disconnect, SignalName, Callable, CallableFrom, [Signal], ToSignal, SignalAwaiter, or works with event handling"
 user-invocable: true
 argument-hint: "[topic: custom|connect|emit|await|eventbus|disconnect]"
 ---
