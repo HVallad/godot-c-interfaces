@@ -35,7 +35,6 @@
 #include "core/io/file_access.h"
 #include "core/io/json.h"
 #include "core/os/midi_driver.h"
-#include "core/os/os.h"
 #include "core/version_generated.gen.h"
 
 #include <cstdarg>
@@ -362,6 +361,10 @@ String OS::get_resource_dir() const {
 // Access system-specific dirs like Documents, Downloads, etc.
 String OS::get_system_dir(SystemDir p_dir, bool p_shared_storage) const {
 	return ".";
+}
+
+String OS::expand_path(const String &p_path) const {
+	return p_path;
 }
 
 void OS::create_lock_file() {

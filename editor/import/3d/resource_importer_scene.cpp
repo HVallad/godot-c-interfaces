@@ -32,6 +32,7 @@
 
 #include "core/error/error_macros.h"
 #include "core/io/dir_access.h"
+#include "core/io/resource_loader.h"
 #include "core/io/resource_saver.h"
 #include "core/object/class_db.h"
 #include "core/object/script_language.h"
@@ -827,19 +828,23 @@ Node *ResourceImporterScene::_pre_fix_node(Node *p_node, Node *p_root, HashMap<R
 			p_node = sb;
 			CollisionShape3D *colshape = memnew(CollisionShape3D);
 			if (empty_draw_type == "CUBE") {
-				BoxShape3D *boxShape = memnew(BoxShape3D);
+				Ref<BoxShape3D> boxShape;
+				boxShape.instantiate();
 				boxShape->set_size(Vector3(2, 2, 2));
 				colshape->set_shape(boxShape);
 			} else if (empty_draw_type == "SINGLE_ARROW") {
-				SeparationRayShape3D *rayShape = memnew(SeparationRayShape3D);
+				Ref<SeparationRayShape3D> rayShape;
+				rayShape.instantiate();
 				rayShape->set_length(1);
 				colshape->set_shape(rayShape);
 				Object::cast_to<Node3D>(sb)->rotate_x(Math::PI / 2);
 			} else if (empty_draw_type == "IMAGE") {
-				WorldBoundaryShape3D *world_boundary_shape = memnew(WorldBoundaryShape3D);
+				Ref<WorldBoundaryShape3D> world_boundary_shape;
+				world_boundary_shape.instantiate();
 				colshape->set_shape(world_boundary_shape);
 			} else {
-				SphereShape3D *sphereShape = memnew(SphereShape3D);
+				Ref<SphereShape3D> sphereShape;
+				sphereShape.instantiate();
 				sphereShape->set_radius(1);
 				colshape->set_shape(sphereShape);
 			}
@@ -1581,70 +1586,67 @@ Node *ResourceImporterScene::_post_fix_node(Node *p_node, Node *p_root, HashMap<
 			if (!r_scanned_meshes.has(m)) {
 				for (int i = 0; i < m->get_surface_count(); i++) {
 					Ref<Material> mat = m->get_surface_material(i);
-					if (mat.is_valid()) {
-						String mat_id = mat->get_meta("import_id", mat->get_name());
-						if (!mat_id.is_empty() && p_material_data.has(mat_id)) {
-							Dictionary matdata = p_material_data[mat_id];
-							{
-								//fill node settings for this node with default values
-								List<ImportOption> iopts;
-								get_internal_import_options(INTERNAL_IMPORT_CATEGORY_MATERIAL, &iopts);
-								for (const ImportOption &E : iopts) {
-									if (!matdata.has(E.option.name)) {
-										matdata[E.option.name] = E.default_value;
-									}
-								}
-							}
-
-							for (int j = 0; j < post_importer_plugins.size(); j++) {
-								post_importer_plugins.write[j]->internal_process(EditorScenePostImportPlugin::INTERNAL_IMPORT_CATEGORY_MATERIAL, p_root, p_node, mat, matdata);
+					if (mat.is_null()) {
+						continue;
+					}
+					const String mat_id = mat->get_meta("import_id", mat->get_name());
+					if (mat_id.is_empty() || !p_material_data.has(mat_id)) {
+						continue;
+					}
+					Dictionary matdata = p_material_data[mat_id];
+					{
+						//fill node settings for this node with default values
+						List<ImportOption> iopts;
+						get_internal_import_options(INTERNAL_IMPORT_CATEGORY_MATERIAL, &iopts);
+						for (const ImportOption &E : iopts) {
+							if (!matdata.has(E.option.name)) {
+								matdata[E.option.name] = E.default_value;
 							}
 						}
-						if (!mat_id.is_empty() && p_material_data.has(mat_id) && extract_mat != 0) {
-							String ext = material_extension[p_options.has("materials/extract_format") ? (int)p_options["materials/extract_format"] : 0];
-							String path = spath.path_join(mat_id.validate_filename() + ext);
-							String uid_path = ResourceUID::path_to_uid(path);
+					}
+					for (int j = 0; j < post_importer_plugins.size(); j++) {
+						post_importer_plugins.write[j]->internal_process(EditorScenePostImportPlugin::INTERNAL_IMPORT_CATEGORY_MATERIAL, p_root, p_node, mat, matdata);
+					}
+					if (extract_mat != 0) {
+						const String ext = material_extension[p_options.has("materials/extract_format") ? (int)p_options["materials/extract_format"] : 0];
+						const String path = spath.path_join(mat_id.validate_filename() + ext);
+						const String uid_path = ResourceUID::path_to_uid(path);
 
-							Dictionary matdata = p_material_data[mat_id];
-							matdata["use_external/enabled"] = true;
-							matdata["use_external/path"] = uid_path;
-							matdata["use_external/fallback_path"] = path;
-							if (!FileAccess::exists(path) || extract_mat == 2 /*overwrite*/) {
-								ResourceSaver::save(mat, path);
-							}
+						matdata["use_external/enabled"] = true;
+						matdata["use_external/path"] = uid_path;
+						matdata["use_external/fallback_path"] = path;
+						if (!FileAccess::exists(path) || extract_mat == 2 /*overwrite*/) {
+							ResourceSaver::save(mat, path);
+						}
 
-							Ref<Material> external_mat = ResourceLoader::load(path, "", ResourceFormatLoader::CACHE_MODE_REPLACE);
-							if (external_mat.is_valid()) {
-								m->set_surface_material(i, external_mat);
+						Ref<Material> external_mat = ResourceLoader::load(path, "", ResourceFormatLoader::CACHE_MODE_REPLACE);
+						if (external_mat.is_valid()) {
+							m->set_surface_material(i, external_mat);
+						}
+					}
+					if (matdata.has("use_external/enabled") && bool(matdata["use_external/enabled"]) && matdata.has("use_external/path")) {
+						String path = matdata["use_external/path"];
+						Ref<Material> external_mat = ResourceLoader::load(path);
+						if (external_mat.is_null()) {
+							if (matdata.has("use_external/fallback_path")) {
+								const String fallback_save_path = matdata["use_external/fallback_path"];
+								if (!fallback_save_path.is_empty()) {
+									external_mat = ResourceLoader::load(fallback_save_path);
+									if (external_mat.is_valid()) {
+										path = fallback_save_path;
+									}
+								}
 							}
 						}
-						if (!mat_id.is_empty() && p_material_data.has(mat_id)) {
-							Dictionary matdata = p_material_data[mat_id];
-							if (matdata.has("use_external/enabled") && bool(matdata["use_external/enabled"]) && matdata.has("use_external/path")) {
-								String path = matdata["use_external/path"];
-								Ref<Material> external_mat = ResourceLoader::load(path);
-								if (external_mat.is_null()) {
-									if (matdata.has("use_external/fallback_path")) {
-										String fallback_save_path = matdata["use_external/fallback_path"];
-										if (!fallback_save_path.is_empty()) {
-											external_mat = ResourceLoader::load(fallback_save_path);
-											if (external_mat.is_valid()) {
-												path = fallback_save_path;
-											}
-										}
-									}
-								}
-								if (external_mat.is_valid()) {
-									m->set_surface_material(i, external_mat);
-									if (!path.begins_with("uid://")) {
-										const ResourceUID::ID id = ResourceLoader::get_resource_uid(path);
-										if (id != ResourceUID::INVALID_ID) {
-											matdata["use_external/path"] = ResourceUID::get_singleton()->id_to_text(id);
-										}
-									}
-									matdata["use_external/fallback_path"] = external_mat->get_path();
+						if (external_mat.is_valid()) {
+							m->set_surface_material(i, external_mat);
+							if (!path.begins_with("uid://")) {
+								const ResourceUID::ID id = ResourceLoader::get_resource_uid(path);
+								if (id != ResourceUID::INVALID_ID) {
+									matdata["use_external/path"] = ResourceUID::get_singleton()->id_to_text(id);
 								}
 							}
+							matdata["use_external/fallback_path"] = external_mat->get_path();
 						}
 					}
 				}
